@@ -124,10 +124,12 @@ class Controller(object):
         # XXX Why doesn't passing in the dict work?
         params = str({'username': self.username, 'password': self.password})
         login_url = self.url + 'api/login'
-        
+
         r = self.session.post(login_url, params)
         if r.status_code is not 200:
             raise APIError("Login failed - status code: %i" % r.status_code)
+
+        self.csrf_token = r.cookies['csrf_token']
 
     def _logout(self):
         log.debug('logout()')
@@ -209,6 +211,16 @@ class Controller(object):
         log.debug('_run_command(%s)', command)
         params.update({'cmd': command})
         return self._write(self.api_url + 'cmd/' + mgr, params=params)
+
+    def create_site(self, site=None, desc=None):
+        if not site:
+            site = 'default'
+        endpoint = '/api/s/' + site + '/cmd/sitemgr'
+        data = {"cmd":"add-site","desc":desc}
+        url = 'https://localhost:8443' + endpoint
+        referer = 'https://localhost:8443' + '/manage/site/' + site + '/dashboard'
+        headers = {'X-Csrf-Token':self.csrf_token,'referer':referer}
+        return self.session.post(url, json=data, headers=headers)
 
     def _mac_cmd(self, target_mac, command, mgr='stamgr'):
         log.debug('_mac_cmd(%s, %s)', target_mac, command)
