@@ -129,8 +129,6 @@ class Controller(object):
         if r.status_code is not 200:
             raise APIError("Login failed - status code: %i" % r.status_code)
 
-        self.csrf_token = r.cookies['csrf_token']
-
     def _logout(self):
         log.debug('logout()')
         self._api_write('logout')
@@ -212,20 +210,17 @@ class Controller(object):
         params.update({'cmd': command})
         return self._write(self.api_url + 'cmd/' + mgr, params=params)
 
-    def create_site(self, site=None, desc=None):
-        if not site:
-            site = 'default'
-        endpoint = '/api/s/' + site + '/cmd/sitemgr'
-        data = {"cmd":"add-site","desc":desc}
-        url = 'https://localhost:8443' + endpoint
-        referer = 'https://localhost:8443' + '/manage/site/' + site + '/dashboard'
-        headers = {'X-Csrf-Token':self.csrf_token,'referer':referer}
-        return self.session.post(url, json=data, headers=headers)
-
     def _mac_cmd(self, target_mac, command, mgr='stamgr'):
         log.debug('_mac_cmd(%s, %s)', target_mac, command)
         params = {'mac': target_mac}
         return self._run_command(command, params, mgr)
+
+    def create_site(self, desc='desc'):
+        """Create a new site.
+
+        :param desc: Name of the site to be created.
+        """
+        return self._run_command('add-site', params={"desc":desc}, mgr='sitemgr')
 
     def block_client(self, mac):
         """Add a client to the block list.
