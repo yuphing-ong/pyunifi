@@ -3,7 +3,6 @@ import logging
 import requests
 import shutil
 import time
-import urllib.parse
 import warnings
 
 
@@ -124,7 +123,7 @@ class Controller(object):
         # XXX Why doesn't passing in the dict work?
         params = str({'username': self.username, 'password': self.password})
         login_url = self.url + 'api/login'
-        
+
         r = self.session.post(login_url, params)
         if r.status_code is not 200:
             raise APIError("Login failed - status code: %i" % r.status_code)
@@ -214,6 +213,13 @@ class Controller(object):
         log.debug('_mac_cmd(%s, %s)', target_mac, command)
         params['mac'] = target_mac
         return self._run_command(command, params, mgr)
+
+    def create_site(self, desc='desc'):
+        """Create a new site.
+
+        :param desc: Name of the site to be created.
+        """
+        return self._run_command('add-site', params={"desc":desc}, mgr='sitemgr')
 
     def block_client(self, mac):
         """Add a client to the block list.
