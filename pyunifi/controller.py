@@ -407,3 +407,15 @@ class Controller(object):
                 s.pop(k, None)
             res[s_sect] = s
         return res
+
+    def update_setting(self, settings):
+        """
+        Update settings
+
+        :param settings: {section:{settings}}
+        :return: resulting settings
+        """
+        res = []
+        for sect, setting in settings.items():
+            res.extend(self._api_write('set/setting/' + sect, setting))
+        return res
