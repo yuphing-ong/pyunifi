@@ -396,7 +396,19 @@ class Controller(object):
         return self._api_read('rest/tag')
 
     def upgrade_device(self, mac, version):
-        return self._mac_cmd(mac, 'upgrade', mgr='devmgr', params={'upgrade_to_firmware': version})
+        """
+        Upgrade a device's firmware to verion
+        :param mac: MAC of dev
+        :param version: version to upgrade to
+        """
+        self._mac_cmd(mac, 'upgrade', mgr='devmgr', params={'upgrade_to_firmware': version})
+
+    def provision(self, mac):
+        """
+        Force provisioning of a device
+        :param mac: MAC of device
+        """
+        self._mac_cmd(mac, 'force-provision', mgr='devmgr')
 
     def get_setting(self, section=None, super=False):
         """
