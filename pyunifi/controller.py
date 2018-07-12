@@ -132,6 +132,19 @@ class Controller(object):
         log.debug('logout()')
         self._api_write('logout')
 
+    def switch_site(self, name):
+        """
+        Switch to another site
+
+        :param name: Site Name
+        :return: True or APIError
+        """
+        for site in self.get_sites():
+            if site['desc'] == name:
+                self.site_id = site['name']
+                return True
+        raise APIError("No site %s found" % name)
+
     def get_alerts(self):
         """Return a list of all Alerts."""
         return self._api_write('stat/alarm')
