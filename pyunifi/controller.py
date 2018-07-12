@@ -383,3 +383,27 @@ class Controller(object):
 
     def upgrade_device(self, mac, version):
         return self._mac_cmd(mac, 'upgrade', mgr='devmgr', params={'upgrade_to_firmware': version})
+
+    def get_setting(self, section=None, super=False):
+        """
+        Return settings for this site or controller
+
+        :param super: Return only controller-wide settings
+        :param section: Only return this/these section(s)
+        :return: {section:settings}
+        """
+        res = {}
+        settings = self._api_read('get/setting')
+        if section and not isinstance(section, (list, tuple)):
+            section = [section]
+
+        for s in settings:
+            s_sect = s['key']
+            if (super and 'site_id' in s) or \
+                (not super and 'site_id' not in s) or \
+                (section and s_sect not in section):
+                continue
+            for k in ('_id', 'site_id', 'key'):
+                s.pop(k, None)
+            res[s_sect] = s
+        return res
