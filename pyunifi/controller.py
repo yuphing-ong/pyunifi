@@ -75,8 +75,6 @@ class Controller(object):
         self.password = password
         self.site_id = site_id
         self.url = 'https://' + host + ':' + str(port) + '/'
-        self.api_url = self.url + 'api/s/' + site_id + '/'
-
         self.ssl_verify = ssl_verify
 
         if ssl_verify is False:
@@ -100,6 +98,9 @@ class Controller(object):
         else:
             return obj
 
+    def _api_url(self):
+        return self.url + 'api/s/' + self.site_id + '/'
+
     @retry_login
     def _read(self, url, params=None):
         # Try block to handle the unifi server being offline.
@@ -107,7 +108,7 @@ class Controller(object):
         return self._jsondec(r.text)
 
     def _api_read(self, url, params=None):
-        return self._read(self.api_url + url, params)
+        return self._read(self._api_url() + url, params)
 
     @retry_login
     def _write(self, url, params=None):
@@ -115,7 +116,7 @@ class Controller(object):
         return self._jsondec(r.text)
 
     def _api_write(self, url, params=None):
-        return self._write(self.api_url + url, params)
+        return self._write(self._api_url() + url, params)
 
     def _login(self):
         log.debug('login() as %s', self.username)
@@ -164,7 +165,7 @@ class Controller(object):
             'attrs': ["bytes", "num_sta", "time"],
             'start': int(endtime - 86400) * 1000,
             'end': int(endtime - 3600) * 1000}
-        return self._write(self.api_url + 'stat/report/hourly.site', params)
+        return self._write(self._api_url() + 'stat/report/hourly.site', params)
 
     def get_events(self):
         """Return a list of all Events."""
@@ -220,7 +221,7 @@ class Controller(object):
     def _run_command(self, command, params={}, mgr='stamgr'):
         log.debug('_run_command(%s)', command)
         params.update({'cmd': command})
-        return self._write(self.api_url + 'cmd/' + mgr, params=params)
+        return self._write(self._api_url() + 'cmd/' + mgr, params=params)
 
     def _mac_cmd(self, target_mac, command, mgr='stamgr', params={}):
         log.debug('_mac_cmd(%s, %s)', target_mac, command)
