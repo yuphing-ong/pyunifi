@@ -210,9 +210,9 @@ class Controller(object):
         params.update({'cmd': command})
         return self._write(self.api_url + 'cmd/' + mgr, params=params)
 
-    def _mac_cmd(self, target_mac, command, mgr='stamgr'):
+    def _mac_cmd(self, target_mac, command, mgr='stamgr', params={}):
         log.debug('_mac_cmd(%s, %s)', target_mac, command)
-        params = {'mac': target_mac}
+        params['mac'] = target_mac
         return self._run_command(command, params, mgr)
 
     def block_client(self, mac):
@@ -374,3 +374,6 @@ class Controller(object):
     def get_tag(self):
         """Get all tags and their member MACs"""
         return self._api_read('rest/tag')
+
+    def upgrade_device(self, mac, version):
+        return self._mac_cmd(mac, 'upgrade', mgr='devmgr', params={'upgrade_to_firmware': version})
