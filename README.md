@@ -101,6 +101,14 @@ Return a list of all known clients, with significant information about each.
 
 Return a list of user groups with its rate limiting settings.
 
+### `update_user_group(self, group_id, down_kbps=-1, up_kbps=-1)`
+
+Update user group bandwidth settings.
+
+- `group_id` -- Group ID to modify.
+- `down_kbps` -- New bandwidth in KBPS for download.
+- `up_kbps` -- New bandwidth in KBPS for upload.
+
 ### `get_wlan_conf(self)`
 
 Return a list of configured WLANs with their configuration parameters.

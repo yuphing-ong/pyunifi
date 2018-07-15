@@ -119,6 +119,14 @@ class Controller(object):
     def _api_write(self, url, params=None):
         return self._write(self._api_url() + url, params)
 
+    @retry_login
+    def _update(self, url, params=None):
+        r = self.session.put(url, json=params)
+        return self._jsondec(r.text)
+
+    def _api_update(self, url, params=None):
+        return self._update(self._api_url() + url, params)
+
     def _login(self):
         log.debug('login() as %s', self.username)
 
@@ -452,3 +460,29 @@ class Controller(object):
         for sect, setting in settings.items():
             res.extend(self._api_write('set/setting/' + sect, setting))
         return res
+        
+    def update_user_group(self, group_id, down_kbps=-1, up_kbps=-1):
+        """
+        Update user group bandwidth settings
+
+        :param group_id: Group ID to modify
+        :param down_kbps: New bandwidth in KBPS for download
+        :param up_kbps: New bandwidth in KBPS for upload
+        """
+
+        res = None
+        groups = self.get_user_groups()
+
+        for group in groups:
+            if group["_id"] == group_id:
+                # Apply setting change
+                res = self._api_update("rest/usergroup/{0}".format(group_id), {
+                    "qos_rate_max_down": down_kbps,
+                    "qos_rate_max_up": up_kbps,
+                    "name": group["name"],
+                    "_id": group_id,
+                    "site_id": self.site_id
+                })
+                return res
+        
+        raise ValueError("Group ID {0} is not valid.".format(group_id))
