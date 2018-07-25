@@ -1,15 +1,10 @@
-# This project is maintained
-
-Issues and pull requests on this repository will be acted on in a timely
-manner.
-
 unifi-api
 =========
 
 ---
-
 A rewrite of https://github.com/unifi-hackers/unifi-lab in cleaner Python.
 Forked from https://github.com/calmh/unifi-api due to unmaintained status.
+Rewritten with Requests module.
 
 Install
 -------
