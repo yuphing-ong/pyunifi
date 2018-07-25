@@ -75,8 +75,6 @@ class Controller(object):
         self.password = password
         self.site_id = site_id
         self.url = 'https://' + host + ':' + str(port) + '/'
-        self.api_url = self.url + 'api/s/' + site_id + '/'
-
         self.ssl_verify = ssl_verify
 
         if ssl_verify is False:
@@ -100,6 +98,9 @@ class Controller(object):
         else:
             return obj
 
+    def _api_url(self):
+        return self.url + 'api/s/' + self.site_id + '/'
+
     @retry_login
     def _read(self, url, params=None):
         # Try block to handle the unifi server being offline.
@@ -107,7 +108,7 @@ class Controller(object):
         return self._jsondec(r.text)
 
     def _api_read(self, url, params=None):
-        return self._read(self.api_url + url, params)
+        return self._read(self._api_url() + url, params)
 
     @retry_login
     def _write(self, url, params=None):
@@ -115,7 +116,7 @@ class Controller(object):
         return self._jsondec(r.text)
 
     def _api_write(self, url, params=None):
-        return self._write(self.api_url + url, params)
+        return self._write(self._api_url() + url, params)
 
     def _login(self):
         log.debug('login() as %s', self.username)
@@ -131,6 +132,19 @@ class Controller(object):
     def _logout(self):
         log.debug('logout()')
         self._api_write('logout')
+
+    def switch_site(self, name):
+        """
+        Switch to another site
+
+        :param name: Site Name
+        :return: True or APIError
+        """
+        for site in self.get_sites():
+            if site['desc'] == name:
+                self.site_id = site['name']
+                return True
+        raise APIError("No site %s found" % name)
 
     def get_alerts(self):
         """Return a list of all Alerts."""
@@ -151,7 +165,7 @@ class Controller(object):
             'attrs': ["bytes", "num_sta", "time"],
             'start': int(endtime - 86400) * 1000,
             'end': int(endtime - 3600) * 1000}
-        return self._write(self.api_url + 'stat/report/hourly.site', params)
+        return self._write(self._api_url() + 'stat/report/hourly.site', params)
 
     def get_events(self):
         """Return a list of all Events."""
@@ -207,11 +221,11 @@ class Controller(object):
     def _run_command(self, command, params={}, mgr='stamgr'):
         log.debug('_run_command(%s)', command)
         params.update({'cmd': command})
-        return self._write(self.api_url + 'cmd/' + mgr, params=params)
+        return self._write(self._api_url() + 'cmd/' + mgr, params=params)
 
-    def _mac_cmd(self, target_mac, command, mgr='stamgr'):
+    def _mac_cmd(self, target_mac, command, mgr='stamgr', params={}):
         log.debug('_mac_cmd(%s, %s)', target_mac, command)
-        params = {'mac': target_mac}
+        params['mac'] = target_mac
         return self._run_command(command, params, mgr)
 
     def create_site(self, desc='desc'):
@@ -380,3 +394,54 @@ class Controller(object):
     def get_tag(self):
         """Get all tags and their member MACs"""
         return self._api_read('rest/tag')
+
+    def upgrade_device(self, mac, version):
+        """
+        Upgrade a device's firmware to verion
+        :param mac: MAC of dev
+        :param version: version to upgrade to
+        """
+        self._mac_cmd(mac, 'upgrade', mgr='devmgr', params={'upgrade_to_firmware': version})
+
+    def provision(self, mac):
+        """
+        Force provisioning of a device
+        :param mac: MAC of device
+        """
+        self._mac_cmd(mac, 'force-provision', mgr='devmgr')
+
+    def get_setting(self, section=None, super=False):
+        """
+        Return settings for this site or controller
+
+        :param super: Return only controller-wide settings
+        :param section: Only return this/these section(s)
+        :return: {section:settings}
+        """
+        res = {}
+        settings = self._api_read('get/setting')
+        if section and not isinstance(section, (list, tuple)):
+            section = [section]
+
+        for s in settings:
+            s_sect = s['key']
+            if (super and 'site_id' in s) or \
+                (not super and 'site_id' not in s) or \
+                (section and s_sect not in section):
+                continue
+            for k in ('_id', 'site_id', 'key'):
+                s.pop(k, None)
+            res[s_sect] = s
+        return res
+
+    def update_setting(self, settings):
+        """
+        Update settings
+
+        :param settings: {section:{settings}}
+        :return: resulting settings
+        """
+        res = []
+        for sect, setting in settings.items():
+            res.extend(self._api_write('set/setting/' + sect, setting))
+        return res
