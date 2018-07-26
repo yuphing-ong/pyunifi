@@ -63,7 +63,8 @@ class Controller(object):
         :param port: the port of the controller host
         :param version: the base version of the controller API [v4|v5]
         :param site_id: the site ID to connect to
-        :param ssl_verify: Verify the controllers SSL certificate, can also be "path/to/custom_cert.pem"
+        :param ssl_verify: Verify the controllers SSL certificate,
+            can also be "path/to/custom_cert.pem"
         """
         if float(version[1:]) < 4:
             raise APIError("%s controllers no longer supported" % version)
@@ -233,7 +234,8 @@ class Controller(object):
 
         :param desc: Name of the site to be created.
         """
-        return self._run_command('add-site', params={"desc":desc}, mgr='sitemgr')
+        return self._run_command('add-site', params={"desc": desc},
+                                 mgr='sitemgr')
 
     def block_client(self, mac):
         """Add a client to the block list.
@@ -295,9 +297,10 @@ class Controller(object):
 
     def get_backup(self, download_path=None, target_file='unifi-backup.unf'):
         """
-        :param download_path: path to backup; if None is given one will be created
-        :param target_file: Filename or full path to download the backup archive to,
-                            should have .unf extension for restore.
+        :param download_path: path to backup; if None is given
+            one will be created
+        :param target_file: Filename or full path to download the
+            backup archive to, should have .unf extension for restore.
         """
         if not download_path:
             download_path = self.create_backup()
@@ -341,7 +344,8 @@ class Controller(object):
         params = {'mac': guest_mac}
         return self._run_command(cmd, params=params)
 
-    def get_firmware(self, cached=True, available=True, known=False, site=False):
+    def get_firmware(self, cached=True, available=True,
+                     known=False, site=False):
         """
         Return a list of available/cached firmware versions
 
@@ -367,7 +371,8 @@ class Controller(object):
         """
         Cache the firmware on the UniFi Controller
 
-        .. warning:: Caching one device might very well cache others, as they're on shared platforms
+        .. warning:: Caching one device might very well cache others,
+            as they're on shared platforms
 
         :param version: version to cache
         :param device: device model to cache (e.g. BZ2)
@@ -381,7 +386,8 @@ class Controller(object):
         """
         Remove cached firmware from the UniFi Controller
 
-        .. warning:: Removing one device's firmware might very well remove others, as they're on shared platforms
+        .. warning:: Removing one device's firmware might very well remove
+            others, as they're on shared platforms
 
         :param version: version to cache
         :param device: device model to cache (e.g. BZ2)
@@ -401,7 +407,8 @@ class Controller(object):
         :param mac: MAC of dev
         :param version: version to upgrade to
         """
-        self._mac_cmd(mac, 'upgrade', mgr='devmgr', params={'upgrade_to_firmware': version})
+        self._mac_cmd(mac, 'upgrade', mgr='devmgr',
+                      params={'upgrade_to_firmware': version})
 
     def provision(self, mac):
         """
@@ -426,8 +433,8 @@ class Controller(object):
         for s in settings:
             s_sect = s['key']
             if (super and 'site_id' in s) or \
-                (not super and 'site_id' not in s) or \
-                (section and s_sect not in section):
+               (not super and 'site_id' not in s) or \
+               (section and s_sect not in section):
                 continue
             for k in ('_id', 'site_id', 'key'):
                 s.pop(k, None)
