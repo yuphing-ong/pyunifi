@@ -7,7 +7,7 @@ unifi-api
 ---
 A rewrite of https://github.com/unifi-hackers/unifi-lab in cleaner Python.
 Forked from https://github.com/calmh/unifi-api due to unmaintained status.
-Rewritten with Requests module.
+amd rewritten with Requests module.
 
 Install
 -------
@@ -104,7 +104,7 @@ c = Controller('192.168.1.99', 'admin', 'p4ssw0rd', 'v3', 'myothersite')
 ```
 
 You can find about the site ID by selecting the site in the UniFi web interface,
-i.e. "My other site". Then you can find ia its URL (`https://localhost:8443/manage/s/foobar`)
+i.e. "My other site". Then you can find its URL (`https://localhost:8443/manage/s/foobar`)
 that the site ID is `myothersite`.
 
 API
