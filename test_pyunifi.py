@@ -1,8 +1,17 @@
-from unittest import mock, TestCase
-# from pyunifi.controller import APIError, Controller
+from unittest import mock, TestCase, main
+from pyunifi.controller import APIError, Controller
+import requests
 
 
 class testPyUnifi(TestCase):
+    def test_controller_args(self):
+        # Test for controller versions
+        self.assertRaises(APIError, Controller, 'host',
+                          'username', 'password', version='v3')
+
+        # Test for missing arguments
+        self.assertRaises(TypeError, Controller, 'username', 'password')
+
     @mock.patch('pyunifi.controller.Controller')
     def test_pyunifi_switch_sites(self, MockPyUnifi):
         controller = MockPyUnifi()
@@ -28,3 +37,7 @@ class testPyUnifi(TestCase):
         response = controller.get_aps()
         self.assertIsNotNone(response)
         self.assertIsInstance(response[0], dict)
+
+
+if __name__ == '__main__':
+    main()
