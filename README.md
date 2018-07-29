@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/finish06/pyunifi.svg?branch=master)](https://travis-ci.com/finish06/pyunifi)
+
+
 unifi-api
 =========
 
