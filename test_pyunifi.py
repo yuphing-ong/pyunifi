@@ -1,6 +1,5 @@
 from unittest import mock, TestCase, main
 from pyunifi.controller import APIError, Controller
-import requests
 
 
 class testPyUnifi(TestCase):
