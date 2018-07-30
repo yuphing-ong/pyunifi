@@ -460,7 +460,7 @@ class Controller(object):
         for sect, setting in settings.items():
             res.extend(self._api_write('set/setting/' + sect, setting))
         return res
-        
+
     def update_user_group(self, group_id, down_kbps=-1, up_kbps=-1):
         """
         Update user group bandwidth settings
@@ -484,5 +484,5 @@ class Controller(object):
                     "site_id": self.site_id
                 })
                 return res
-        
+
         raise ValueError("Group ID {0} is not valid.".format(group_id))
