@@ -1,3 +1,4 @@
+[![PyPI version](https://badge.fury.io/py/pyunifi.svg)](https://badge.fury.io/py/pyunifi)
 [![Build Status](https://travis-ci.com/finish06/pyunifi.svg?branch=master)](https://travis-ci.com/finish06/pyunifi)
 
 
