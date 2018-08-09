@@ -487,11 +487,11 @@ class Controller(object):
 
         raise ValueError("Group ID {0} is not valid.".format(group_id))
 
-    def set_client_alias(self,mac,alias):
+    def set_client_alias(self, mac, alias):
         """
         Set the client alias. Set to "" to reset to default
         :param mac: The MAC of the client to rename
         :param alias: The alias to set
         """
         client = self.get_client(mac)['_id']
-        return self._api_update('rest/user/' + client,{'name': alias})
+        return self._api_update('rest/user/' + client, {'name': alias})

@@ -165,6 +165,11 @@ Unauthorize a guest based on his MAC address.
 
   - `guest_mac` -- the guest MAC address : aa:bb:cc:dd:ee:ff
 
+### `set_client_alias(self, mac, alias)`
+Set client alias. Use "" to reset to the default.
+  - mac: The target MAC: aa:bb:cc:dd:ee:ff
+  - alias: The alias to set
+
 Utilities
 ---------
 
