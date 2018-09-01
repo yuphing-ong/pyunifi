@@ -216,6 +216,10 @@ class Controller(object):
         """Return basic system informations."""
         return self._api_read('stat/sysinfo')
 
+    def get_healthinfo(self):
+        """Return health information."""
+        return self._api_read('stat/health')
+
     def get_sites(self):
         """Return a list of all sites,
         with their UID and description"""
