@@ -110,6 +110,10 @@ Update user group bandwidth settings.
 - `down_kbps` -- New bandwidth in KBPS for download.
 - `up_kbps` -- New bandwidth in KBPS for upload.
 
+### `get_healthinfo(self)`
+
+Return high level health information on status of the setup
+
 ### `get_wlan_conf(self)`
 
 Return a list of configured WLANs with their configuration parameters.
