@@ -6,7 +6,7 @@ class testPyUnifi(TestCase):
     def test_controller_args(self):
         # Test for controller versions
         self.assertRaises(APIError, Controller, 'host',
-                          'username', 'password', version='v3')
+                          'username', 'password', version='v5')
 
         # Test for missing arguments
         self.assertRaises(TypeError, Controller, 'username', 'password')
