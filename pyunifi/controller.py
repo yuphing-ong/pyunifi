@@ -131,10 +131,10 @@ class Controller(object):
         log.debug('login() as %s', self.username)
 
         # XXX Why doesn't passing in the dict work?
-        params = str({'username': self.username, 'password': self.password})
+        params = {'username': self.username, 'password': self.password}
         login_url = self.url + 'api/login'
 
-        r = self.session.post(login_url, params)
+        r = self.session.post(login_url, json=params)
         if r.status_code is not 200:
             raise APIError("Login failed - status code: %i" % r.status_code)
 
