@@ -295,16 +295,18 @@ class Controller(object):
         """Archive all Alerts"""
         return self._run_command('archive-all-alarms', mgr='evtmgr')
 
-    def create_backup(self):
+    def create_backup(self, days='0'):
         """Ask controller to create a backup archive file
 
         ..warning:
             This process puts significant load on the controller
             and may render it partially unresponsive for other requests.
 
+        :param days: metrics of the last x days will be added to the backup.
+            '-1' backup all metrics. '0' backup only the configuration.
         :return: URL path to backup file
         """
-        res = self._run_command('backup', mgr='system')
+        res = self._run_command('backup', mgr='system', params={'days': days})
         return res[0]['url']
 
     def get_backup(self, download_path=None, target_file='unifi-backup.unf'):
