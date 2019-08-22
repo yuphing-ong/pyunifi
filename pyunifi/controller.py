@@ -501,3 +501,61 @@ class Controller(object):
         """
         client = self.get_client(mac)['_id']
         return self._api_update('rest/user/' + client, {'name': alias})
+
+    def create_voucher(self, number, quota, expire, up_bandwidth=None,
+                       down_bandwidth=None, byte_quota=None, note=None):
+        """
+        Create voucher for guests.
+
+        :param number: number of vouchers
+        :param quota: number of using; 0 = unlimited
+        :param expire: expiration of voucher in minutes
+        :param up_bandwidth: up speed allowed in kbps
+        :param down_bandwidth: down speed allowed in kbps
+        :param byte_quota: quantity of bytes allowed in MB
+        :param note: description
+        """
+        cmd = 'create-voucher'
+        params = {'n': number, 'quota': quota, 'expire': 'custom',
+                  'expire_number': expire, 'expire_unit': 1}
+
+        if up_bandwidth:
+            params['up'] = up_bandwidth
+        if down_bandwidth:
+            params['down'] = down_bandwidth
+        if byte_quota:
+            params['bytes'] = byte_quota
+        if note:
+            params['note'] = note
+        res = self._run_command(cmd, mgr='hotspot', params=params)
+        return self.list_vouchers(create_time=res[0]['create_time'])
+
+    def list_vouchers(self, **filter):
+        """
+        Get list of vouchers
+
+        :param filter:  Filter vouchers by create_time, code, quota,
+                        used, note, status_expires, status, ...
+
+        """
+        if 'code' in filter:
+            filter['code'] = filter['code'].replace('-', '')
+
+        vouchers = []
+        for voucher in self._api_read('stat/voucher'):
+            voucher_match = True
+            for key, val in filter.items():
+                voucher_match &= voucher.get(key) == val
+            if voucher_match:
+                vouchers.append(voucher)
+        return vouchers
+
+    def delete_voucher(self, id):
+        """
+        Delete / revoke voucher
+
+        :param id: id of voucher
+        """
+        cmd = 'delete-voucher'
+        params = {'_id': id}
+        self._run_command(cmd, mgr='hotspot', params=params)
