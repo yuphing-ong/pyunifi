@@ -165,7 +165,7 @@ class Controller(object):
 
     def get_statistics_last_24h(self):
         """Returns statistical data of the last 24h"""
-        return self.get_statistics_24h(time())
+        return self.get_statistics_24h(time.time())
 
     def get_statistics_24h(self, endtime):
         """Return statistical data last 24h from time"""
