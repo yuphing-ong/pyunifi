@@ -136,6 +136,12 @@ Remove a client from the block list.
 
  - `mac` -- the MAC address of the client to unblock.
 
+### `forget_client(self, mac)`
+
+Forget a client.
+
+ - `mac` -- the MAC address of the client to forget.
+
 ### `archive_all_alerts(self)`
 
 Archive all alerts of site.
