@@ -265,11 +265,11 @@ class Controller(object):
 
     def forget_client(self, mac):
         """Forget a client.
-        
+
         :param mac: the MAC address of the client to forget.
         """
         return self._mac_cmd(mac, 'forget-sta')
-      
+
     def disconnect_client(self, mac):
         """Disconnect a client.
 
