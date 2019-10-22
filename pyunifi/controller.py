@@ -241,6 +241,11 @@ class Controller(object):
         params['mac'] = target_mac
         return self._run_command(command, params, mgr)
 
+    def _macs_cmd(self, target_macs, command, mgr='stamgr', params={}):
+        log.debug('_mac_cmd(%s, %s)', target_macs, command)
+        params['macs'] = target_macs
+        return self._run_command(command, params, mgr)
+ 
     def create_site(self, desc='desc'):
         """Create a new site.
 
@@ -263,12 +268,12 @@ class Controller(object):
         """
         return self._mac_cmd(mac, 'unblock-sta')
 
-    def forget_client(self, mac):
-        """Forget a client.
+    def forget_client(self, macs):
+        """Forget one or more clients.
 
-        :param mac: the MAC address of the client to forget.
+        :param macs: a list of MAC addresses of the clients to forget.
         """
-        return self._mac_cmd(mac, 'forget-sta')
+        return self._macs_cmd(macs, 'forget-sta')
 
     def disconnect_client(self, mac):
         """Disconnect a client.

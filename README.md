@@ -136,11 +136,11 @@ Remove a client from the block list.
 
  - `mac` -- the MAC address of the client to unblock.
 
-### `forget_client(self, mac)`
+### `forget_client(self, macs)`
 
-Forget a client.
+Forget one or more clients.
 
- - `mac` -- the MAC address of the client to forget.
+ - `macs` -- a list of one or more MAC addresses of the clients to forget, e.g. ['00:00:00:00:00:01', '00:00:00:00:00:02']
 
 ### `archive_all_alerts(self)`
 
