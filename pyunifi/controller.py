@@ -245,7 +245,7 @@ class Controller(object):
         log.debug('_mac_cmd(%s, %s)', target_macs, command)
         params['macs'] = target_macs
         return self._run_command(command, params, mgr)
- 
+
     def create_site(self, desc='desc'):
         """Create a new site.
 
